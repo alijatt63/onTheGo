@@ -1,5 +1,5 @@
-import React,{useEffect,useState} from "react";
-import { Button, TextInput, View, StyleSheet} from "react-native";
+import React,{useEffect,useState,useRef} from "react";
+import { ScrollView,Button, TextInput, View, StyleSheet,TouchableOpacity,Image} from "react-native";
 import * as EmailValidator from "email-validator";
 import { Camera, CameraType, requestPermissionsAsync } from "expo-camera";
 
@@ -26,58 +26,63 @@ useEffect(()=>{
 
     checkValidForm()}, [email,firstName,lastName,password,confirmPassword])
 
-    const checkValidForm=()=>{
+const checkValidForm=()=>{
 
-
-        if(email===""){
+if(email===""){
 setIsValid(false)
-
-
 return
-        
-        }
-        if(firstName===""){
-            setIsValid(false)
-            return
-                    
-                    }
-                    if(lastName===""){
-                        setIsValid(false)
-                        return
-                                
-                                }
-                                if(password===""){
-                                    setIsValid(false)
-                                    return
-                                            }
-                                            if(confirmPassword===""){
-                                                setIsValid(false)
-                                                return
-                                                        
-                                                        }
-    if(password !==confirmPassword){
+}
+if(firstName===""){
 setIsValid(false)
-
-
-
-
 return
-        }
-        if(EmailValidator.validate(email)===false){
-            setIsValid(false)
-            return
-                    
-                    }
-                    setIsValid(true);
+}
+ if(lastName===""){
+setIsValid(false)
+return
+}
+if(password===""){
+setIsValid(false)
+return
+}
+if(confirmPassword===""){
+setIsValid(false)
+return
+}
+if(password !==confirmPassword){
+setIsValid(false)
+return
+}
+if(EmailValidator.validate(email)===false){
+setIsValid(false)
+return
+}
+setIsValid(true);
+}
 
 
+const cameraRef=useRef();
+const [profilePicUri,setProfilePicUri]=useState("");
+const onTakePic=()=>{
 
+if(cameraRef.current===undefined){
+    return;
+}
 
-    }
+cameraRef.current.takePictureAsync().then((response)=>{console.log(response);
+if(response.uri !== undefined){
+setProfilePicUri(response.uri)
+}})
+.catch((error)=>{
+    alert(error.message);
+});
+
+}
+
 return(
 
 
-<View style={style.container}>
+<ScrollView style={style.container}>
+<Image style={style.profilePic} source={{ uri: profilePicUri }} />
 <View style={style.form}>
 <TextInput style={style.inputBox} onChangeText={setFirstName} placeholder="First Name"  />
 <TextInput style={style.inputBox} onChangeText={setLastName} placeholder="Last Name"  />
@@ -88,13 +93,24 @@ return(
 <Button title={'Submit'} onPress={onPressSubmit} disabled={isValid===false}></Button>
 
 </View>
+
 <View style={style.bottomBox}>
-<Camera style={style.camera} type={type}></Camera>
+<Camera ref={cameraRef} style={style.camera} type={type}>
+<TouchableOpacity onPress={onTakePic}>
+<View style={style.cameraButton}>
+
+
+</View>
+
+</TouchableOpacity>
+
+
+</Camera>
 
 </View>
 
 
-</View>
+</ScrollView>
 
 
 
@@ -139,8 +155,22 @@ borderRadius:10
 
     },
 
+cameraButton:{
 
+    width:30,
+    height:30,
+    margin:20,
+    borderRadius:50,
+    backgroundColor:"white"
+},
+profilePic:{
+width:100,
+height:100,
+margin:5,
+borderRadius:100,
+alignSelf:"center"
 
+}
 
 
 
