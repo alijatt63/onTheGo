@@ -4,7 +4,7 @@ import * as EmailValidator from "email-validator";
 import { Camera, CameraType, requestPermissionsAsync } from "expo-camera";
 
 
-function Register(){
+function Landing(){
 
 const [isValid,setIsValid]=useState(false);
 const [lastName,setLastName]=useState("");
@@ -120,7 +120,7 @@ return(
 
 }
 
-export {Register};
+export {Landing};
 
 const style=StyleSheet.create({
     container:{
