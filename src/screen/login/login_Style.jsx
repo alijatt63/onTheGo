@@ -4,16 +4,19 @@ import { colors, genericStyles } from "../../theme/designSystem";
 const Styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    marginTop: 30,
+    marginTop: 5,
     flex: 1,
   },
   formCon: {
-    flex: 0.8,
+    marginTop:100,
+    alignItems:"center",
+    flex: 0.5,
   },
   bottomCon: {
-    flex: 0.2,
+    flex: 0.5,
   },
   form: {
+    marginTop:-20,
     padding: 10,
   },
   inputCon: {
