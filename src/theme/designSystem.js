@@ -26,6 +26,7 @@ const colors = {
       borderWidth: 1,
       borderColor: colors.accent,
       padding: 10,
+      color:colors.primary
     },
   };
   
