@@ -1,111 +1,31 @@
 import React,{useEffect,useState,useRef} from "react";
 import { ScrollView,Button, TextInput, View, StyleSheet,TouchableOpacity,Image} from "react-native";
-import * as EmailValidator from "email-validator";
-import { Camera, CameraType, requestPermissionsAsync } from "expo-camera";
+
 
 
 function Landing(){
 
-const [isValid,setIsValid]=useState(false);
-const [lastName,setLastName]=useState("");
-const [firstName,setFirstName]=useState("");
-const [email,setEmail]=useState("");
-const [password,setPassword]=useState("");
-const [confirmPassword,setConfirmPassword]=useState("");
-const onPressSubmit=()=>{
-alert(" Your Form is Valid")
-};
-
-const [type,setType]=useState(CameraType.front);
-const [permisiion,requestPermission]=Camera.useCameraPermissions();
-requestPermission();
 
 
-useEffect(()=>{
-
-
-    checkValidForm()}, [email,firstName,lastName,password,confirmPassword])
-
-const checkValidForm=()=>{
-
-if(email===""){
-setIsValid(false)
-return
-}
-if(firstName===""){
-setIsValid(false)
-return
-}
- if(lastName===""){
-setIsValid(false)
-return
-}
-if(password===""){
-setIsValid(false)
-return
-}
-if(confirmPassword===""){
-setIsValid(false)
-return
-}
-if(password !==confirmPassword){
-setIsValid(false)
-return
-}
-if(EmailValidator.validate(email)===false){
-setIsValid(false)
-return
-}
-setIsValid(true);
-}
-
-
-const cameraRef=useRef();
-const [profilePicUri,setProfilePicUri]=useState("");
-const onTakePic=()=>{
-
-if(cameraRef.current===undefined){
-    return;
-}
-
-cameraRef.current.takePictureAsync().then((response)=>{console.log(response);
-if(response.uri !== undefined){
-setProfilePicUri(response.uri)
-}})
-.catch((error)=>{
-    alert(error.message);
-});
-
-}
 
 return(
 
 
 <ScrollView style={style.container}>
-<Image style={style.profilePic} source={{ uri: profilePicUri }} />
-<View style={style.form}>
-<TextInput style={style.inputBox} onChangeText={setFirstName} placeholder="First Name"  />
-<TextInput style={style.inputBox} onChangeText={setLastName} placeholder="Last Name"  />
-<TextInput style={style.inputBox} onChangeText={setEmail} placeholder="Email"  />
-<TextInput style={style.inputBox} onChangeText={setPassword} placeholder="Enter Password"  />
-<TextInput style={style.inputBox} onChangeText={setConfirmPassword} placeholder="Confirm Your Password"  />
 
-<Button title={'Submit'} onPress={onPressSubmit} disabled={isValid===false}></Button>
+<View style={style.form}>
+
+
+
 
 </View>
 
 <View style={style.bottomBox}>
-<Camera ref={cameraRef} style={style.camera} type={type}>
-<TouchableOpacity onPress={onTakePic}>
-<View style={style.cameraButton}>
 
 
-</View>
-
-</TouchableOpacity>
 
 
-</Camera>
+
 
 </View>
 
@@ -150,7 +70,7 @@ borderRadius:10
     },
     camera:{
         width:"100%",
-        height: 150,
+        height: 250,
        
 
     },

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import {Image, TextInput,Text, View, TouchableOpacity,ScrollView } from "react-native";
+import {Image, TextInput,Text, View, TouchableOpacity} from "react-native";
 import { Button } from "../../component/button";
 import { colors } from "../../theme/designSystem";
 import { Styles } from "./login_Style";
+import Spinner from "react-native-loading-spinner-overlay";
 
-function Login() {
+function Login({navigation}) {
 
 const [username,setUsername]=useState("");
 const [password,setPassword]=useState("");
@@ -13,7 +14,8 @@ console.log(`username: ${username}, password: ${password} `)
 alert(`username: ${username} & password: ${password}`);
 }
 const registerPress=()=>{
-alert('Welcome to the Family')
+  
+  navigation.navigate("Register");
 }
 const forgetPress=()=>{
   alert('oh, Sorry For that')
@@ -26,7 +28,7 @@ const forgetPress=()=>{
       <View style={Styles.formCon}>
       <Image style={{width:180,height:220}}
 
-        source={require("D:/Project/onTheGo/assets/logo.png")}
+        source={require("../../../assets/logo.png")}
       />  
       </View>
       
