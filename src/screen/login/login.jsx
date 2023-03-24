@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useState,useEffect} from "react";
 import {Image, TextInput,Text, View, TouchableOpacity} from "react-native";
 import { Button } from "../../component/button";
 import { colors } from "../../theme/designSystem";
 import { Styles } from "./login_Style";
 import Spinner from "react-native-loading-spinner-overlay";
+import { getIsUserLoggedIn } from "../../utils/help";
 
 function Login({navigation}) {
+
+useEffect(()=>{
+getIsUserLoggedIn().then((response)=>{
+if(response==="true"){
+
+  navigation.replace("Main")
+}
+
+
+})
+
+
+})
+
 
 const [username,setUsername]=useState("");
 const [password,setPassword]=useState("");

@@ -1,8 +1,8 @@
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { TouchableOpacity, TextInput, View,Image} from "react-native";
 import * as EmailValidator from "email-validator";
 import { useEffect,useState } from "react";
-import { auth ,db} from "../../services/fireBaseConfig";
+import { auth ,db,storage} from "../../services/fireBaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Styles } from "./register_Style";
 import { Button } from "../../component/button";
@@ -10,6 +10,9 @@ import { colors } from "../../theme/designSystem";
 import Spinner from "react-native-loading-spinner-overlay";
 import { setDoc, doc, collection } from "firebase/firestore";
 import { CustomCamera } from "../../component/customCamera";
+import { uriToBlob } from "../../utils/help";
+import { async } from "@firebase/util";
+import { saveIsUserLoggedIn } from "../../utils/help";
 
 function Register({navigation}){
 
@@ -21,6 +24,7 @@ const [password,setPassword]=useState("");
 const [confirmPassword,setConfirmPassword]=useState("");
 const [loading, setLoading] = useState(false);
 const [isCameraOpen, setIsCameraOpen] = useState(false);
+const [profilePic,setProfilePic]=useState("");
 
 
 
@@ -53,6 +57,10 @@ const onPressSubmit=()=>{
             alert("Your Password dosen't Match");
         return
         }
+        if (profilePic === "") {
+          alert("Kindly Attach Profile Picture");
+          return;
+        }
       
        
 
@@ -66,14 +74,7 @@ const onPressSubmit=()=>{
         // print authResponse to study and get UID out of it
         console.log(user.uid)
 
-
-        setDoc(doc(db, 'users', user.uid), { email, firstName, lastName }).then(dbResponse => {
-          setLoading(false);
-          alert('user is registerd');
-        }).catch(dbError => {
-          setLoading(false);
-          alert(dbError.message);
-        })
+        attemptToUploadData(user.uid);
 
 
       })
@@ -90,13 +91,48 @@ const onPickImagePress = () => {
   }
 
 
+  const onPicTaken=(picturePath)=>{
+    setIsCameraOpen(false);
+    setProfilePic(picturePath);
+  }
+  const attemptToUploadData = async(uid)=>{
+
+    try{
+        setLoading(true);
+
+        const blobResponse= await uriToBlob(profilePic);
+        const filename = `profile_${Date.now()}`;
+        const fileRef=ref(storage,fileName);
+        const uploadImageResponse= await uploadBytes(fileRef,blobResponse);
+        const fileResponse=await getDownloadURL(fileRef);
+
+        const data={
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          profileImage: fileResponse
+
+        }
+
+
+        const uploadDocument= await setDoc(doc(db,"users",uid),data);
+        setLoading(false);
+
+        saveIsUserLoggedIn();
+        navigation.replace("Main");
+
+    }
+    catch(error){
+      alert(error.message);
+      setLoading(false)
+
+    }
+  }
 
 
 
-useEffect(()=>{
 
-
-    checkValidForm()}, [email,firstName,lastName,password,confirmPassword])
+useEffect(()=>{checkValidForm() }, [email,firstName,lastName,password,confirmPassword])
 
 const checkValidForm=()=>{
 
@@ -115,7 +151,15 @@ return(
 <TouchableOpacity style={Styles.pickImageCon}
           onPress={onPickImagePress}
         >
-          <Image style={Styles.profieImage} source={require('../../../assets/icon.png')} />
+          
+          <Image
+            style={Styles.profieImage}
+            source={
+              profilePic === ""
+                ? require("../../../assets/icon.png")
+                : { uri: profilePic }
+            }
+          />
         </TouchableOpacity>
 <TextInput style={Styles.inputCon} onChangeText={setFirstName} placeholder="First Name" placeholderTextColor={colors.secondary} />
 <TextInput style={Styles.inputCon} onChangeText={setLastName} placeholder="Last Name" placeholderTextColor={colors.secondary} />
@@ -141,7 +185,7 @@ return(
 
 {
         isCameraOpen === true &&
-        <CustomCamera />
+        <CustomCamera onProfileTaken ={onPicTaken} />
       }
 
 </View>

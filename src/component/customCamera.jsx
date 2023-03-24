@@ -9,7 +9,7 @@ import { Camera, CameraType } from "expo-camera";
 // takes picture and gives its parent screen the picture data
 // closes it self 
 
-function CustomCamera({ }) {
+function CustomCamera({onProfileTaken}) {
 
   const cameraRef = useRef();
   const [type, setType] = useState(CameraType.front);
@@ -29,7 +29,7 @@ function CustomCamera({ }) {
         console.log(response);
         // check if the path of picture exists then take it to the state
         if (response.uri !== undefined) {
-          // setProfilePicUri(response.uri);
+          onProfileTaken(response.uri);
         }
       })
       .catch((error) => {
@@ -49,7 +49,7 @@ function CustomCamera({ }) {
         </View>
       </Camera>
     </View>)
-
+  
 }
 
 
