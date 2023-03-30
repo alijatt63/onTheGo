@@ -101,7 +101,7 @@ const onPickImagePress = () => {
         setLoading(true);
 
         const blobResponse= await uriToBlob(profilePic);
-        const filename = `profile_${Date.now()}`;
+        const fileName = `profile_${Date.now()}`;
         const fileRef=ref(storage,fileName);
         const uploadImageResponse= await uploadBytes(fileRef,blobResponse);
         const fileResponse=await getDownloadURL(fileRef);
@@ -116,6 +116,7 @@ const onPickImagePress = () => {
 
 
         const uploadDocument= await setDoc(doc(db,"users",uid),data);
+        
         setLoading(false);
 
         saveIsUserLoggedIn();
@@ -156,7 +157,7 @@ return(
             style={Styles.profieImage}
             source={
               profilePic === ""
-                ? require("../../../assets/icon.png")
+                ? require("../../../assets/pic.png")
                 : { uri: profilePic }
             }
           />

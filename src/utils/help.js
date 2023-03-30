@@ -27,7 +27,7 @@ function uriToBlob(uri) {
   }
 
 
-  const saveIsUserLoggedIn = async()=>{
+const saveIsUserLoggedIn = async()=>{
     try{
       await AsyncStorage.setItem("isUserLoggedIn","true");
   
@@ -40,18 +40,13 @@ function uriToBlob(uri) {
     }
   }
 
-    const removeIsUserLoggedIn= async()=>{
-try{
-await AsyncStorage.setItem("isUserLoggedIn","false")
-
-}catch(error){
-
-  alert(error.message);
-
-}
-
+  const removeIsUserLoggedIn = async () => {
+    try {
+      await AsyncStorage.setItem("isUserLoggedIn", "false");
+    } catch (error) {
+      alert(error.message);
     }
-
+  };
     
     const getIsUserLoggedIn=async()=>{
       try{
@@ -66,8 +61,27 @@ await AsyncStorage.setItem("isUserLoggedIn","false")
 
     }
 
+    const saveUserUid = async (uid) => {
+      try {
+        await AsyncStorage.setItem("user_id", uid);
+      }catch(error){
+        alert(error.message);
+
+      }
+    }
+
+    const getUserUid=async()=>{
+      try{
+        const respone= await AsyncStorage.getItem("user_id");
+        return respone;
+      }catch(error){
+        alert(error.message);
+
+      }
+    }
+
 
   
   
-  export { uriToBlob,getIsUserLoggedIn,saveIsUserLoggedIn,removeIsUserLoggedIn };
+  export { uriToBlob,getIsUserLoggedIn,saveIsUserLoggedIn,removeIsUserLoggedIn,getUserUid,saveUserUid};
   

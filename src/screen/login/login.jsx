@@ -4,7 +4,10 @@ import { Button } from "../../component/button";
 import { colors } from "../../theme/designSystem";
 import { Styles } from "./login_Style";
 import Spinner from "react-native-loading-spinner-overlay";
-import { getIsUserLoggedIn } from "../../utils/help";
+import { getIsUserLoggedIn, saveIsUserLoggedIn, saveUserUid} from "../../utils/help";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../services/fireBaseConfig";
+
 
 function Login({navigation}) {
 
@@ -16,17 +19,18 @@ if(response==="true"){
 }
 
 
-})
+});
 
 
-})
+},[])
 
-
-const [username,setUsername]=useState("");
+const [email,setEmail]=useState("");
 const [password,setPassword]=useState("");
+const [loading, setLoading] = useState(false);
+
 const loginPress=()=>{
-console.log(`username: ${username}, password: ${password} `)
-alert(`username: ${username} & password: ${password}`);
+console.log(`username: ${email}, password: ${password} `)
+alert(`username: ${email} & password: ${password}`);
 }
 const registerPress=()=>{
   
@@ -34,6 +38,27 @@ const registerPress=()=>{
 }
 const forgetPress=()=>{
   alert('oh, Sorry For that')
+}
+
+
+
+const attemptLogin=()=>{
+
+  setLoading(true);
+  signInWithEmailAndPassword(auth,email,password).then((response)=>{
+    const user=response.user;
+    const uid=user.uid;
+
+    saveIsUserLoggedIn();
+    saveUserUid(uid);
+    setLoading(false);
+    navigation.replace("Main"); 
+
+  }).catch((error)=>{
+    alert(error.message);
+    setLoading(false);
+  })
+
 }
 
   return (
@@ -51,8 +76,8 @@ const forgetPress=()=>{
 
       <View style={Styles.form }>
           <TextInput placeholder="Enter your username" placeholderTextColor={colors.secondary} style={Styles.inputCon}
-           onChangeText={text => setUsername(text)}
-          value={username}
+           onChangeText={text => setEmail(text)}
+          value={email}
            />
           <TextInput placeholder="Enter your password" placeholderTextColor={colors.secondary} style={Styles.inputCon} secureTextEntry
           onChangeText={text=> setPassword(text)}
@@ -61,7 +86,7 @@ const forgetPress=()=>{
         </View>
       
         <View style={{flexDirection:"row",alignSelf:"center",marginTop:10}}>
-          <Button outline title={"Signin"} onPress={loginPress}/>
+          <Button outline title={"Signin"} onPress={attemptLogin}/>
         </View>
         <View style={{flexDirection:"row",alignSelf:"center"}}>
         <TouchableOpacity onPress={registerPress}>        
@@ -74,7 +99,7 @@ const forgetPress=()=>{
        </View>
       
       </View>
-       
+      <Spinner visible={loading} textContent={"Loading..."} />
     </View>
 
   );
